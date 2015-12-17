@@ -19,7 +19,7 @@ class CPhpCache implements ICache
 		$this->delete($key);
 		$time = $duration !== null ? (int) $duration : $this->getDefaultTime();
 		$obCache = new \CPHPCache();
-		$obCache->InitCache($time, $key, '/' . md5($key));
+		$obCache->InitCache($time, $key, $this->getFolder($key));
 		$obCache->StartDataCache();
 		$obCache->EndDataCache($data);
 	}
@@ -31,7 +31,7 @@ class CPhpCache implements ICache
 	public function get($key)
 	{
 		$obCache = new \CPHPCache();
-		if ($obCache->InitCache($this->getDefaultTime(), $key, '/' . md5($key))) {
+		if ($obCache->InitCache($this->getInitedTime(), $key, $this->getFolder($key))) {
 			return $obCache->GetVars();
 		} else {
 			return false;
@@ -43,8 +43,9 @@ class CPhpCache implements ICache
 	 */
 	public function delete($key)
 	{
-		$obCache->InitCache($this->getDefaultTime(), $key, '/' . md5($key));
-		return \BXClearCache(md5($key));
+		$obCache = new \CPHPCache();
+		$obCache->InitCache($this->getInitedTime(), $key, $this->getFolder($key));
+		$obCache->CleanDir($this->getFolder($key));
 	}
 	
 	/**
@@ -54,8 +55,13 @@ class CPhpCache implements ICache
 	public function exists($key)
 	{
 		$obCache = new \CPHPCache();
-		return (bool) $obCache->InitCache($this->getDefaultTime(), $key, '/' . md5($key));
+		return (bool) $obCache->InitCache(
+			$this->getInitedTime(),
+			$key,
+			$this->getFolder($key)
+		);
 	}
+
 
 	/**
 	 * @param int $time
@@ -71,5 +77,23 @@ class CPhpCache implements ICache
 	public function getDefaultTime()
 	{
 		return $this->_defaultTime;
+	}
+
+
+	/**
+	 * @param string $key
+	 * @return string
+	 */
+	protected function getFolder($key)
+	{
+		return '/' . md5($key);
+	}
+
+	/**
+	 * @return int
+	 */
+	protected function getInitedTime()
+	{
+		return 3600;
 	}
 }
