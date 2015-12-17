@@ -1,0 +1,19 @@
+{
+	"name": "marvin255/bxcache",
+	"description": "Оболочка для кэша битрикса",
+	"type": "library",
+	"keywords": ["bitrix", "cache", "битрикс", "кэш"],
+	"license": "MIT",
+	"require": {
+		"php": ">=5.3.2"
+	},
+	"autoload": {
+		"psr-4": { "marvin255\\bxcache\\": "lib/" }
+	},
+	"repositories": [
+		{
+			"type": "git",
+			"url": "https://github.com/marvin255/bxcache"
+		}
+	]
+}
