@@ -16,6 +16,7 @@ class CPhpCache implements ICache
 	 */
 	public function set($key, $data, $duration = null)
 	{
+		if (isset($_REQUEST['clear_cache']) && $_REQUEST['clear_cache'] === 'Y') return null;
 		$this->delete($key);
 		$time = $duration !== null ? (int) $duration : $this->getDefaultTime();
 		$obCache = new \CPHPCache();
